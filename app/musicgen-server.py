@@ -11,9 +11,15 @@ import json
 from transformers import AutoProcessor, MusicgenForConditionalGeneration
 import torch
 
-model_name = "facebook/musicgen-large"
+device = 'cpu'
+if torch.cuda.is_available():
+    device = 'cuda'
+elif torch.backends.mps.is_available():
+    device = 'mps'
+
+model_name = "facebook/musicgen-small"
 processor = AutoProcessor.from_pretrained(model_name)
-model = torch.compile(MusicgenForConditionalGeneration.from_pretrained(model_name)).to('cuda')
+model = torch.compile(MusicgenForConditionalGeneration.from_pretrained(model_name)).to(device)
 
 prompts = []
 
@@ -45,7 +51,7 @@ def run_generate():
           padding=True,
           sampling_rate=sampling_rate,
           return_tensors="pt"
-        ).to('cuda')
+        ).to(model.device)
 
         if audio_values is not None:
             inputs["input_values"] = inputs["input_values"].to(model.dtype)
