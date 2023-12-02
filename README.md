@@ -31,7 +31,7 @@ Hardware: 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can genera
 
 At real-time speed, it'll take batch size * 3 minutes to buffer the stream, so keep that in mind (or change play_stream_time to a smaller value in musicgen-client.py)
 
-CPU generation at real-time with the small model might be possible, especially if you tune the `1 * 63616` line smaller in [https://github.com/kig/musicgen-stream/blob/f4c58e4cd89784f1e399cc89ea003079ae94ee4e/app/musicgen-server.py#L73](app/musicgen-server.py). Mac MPS produces garbled output and tends to OOM after a few iterations.
+CPU generation at real-time with the small model might be possible, especially if you tune the `1 * 63616` line smaller in [app/musicgen-server.py](https://github.com/kig/musicgen-stream/blob/f4c58e4cd89784f1e399cc89ea003079ae94ee4e/app/musicgen-server.py#L73). Mac MPS produces garbled output and tends to OOM after a few iterations.
 
 Edit the `start.sh` script to set where to save the models (huggingface cache), and you can set CUDA_VISIBLE_DEVICES, Docker network to use, etc. 
 
