@@ -27,7 +27,7 @@ python musicgen-client.py http://localhost:8765/generate prompts.json
 
 Music should start playing after around 10 minutes of buffering.
 
-Hardware: 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can generate three interleaved streams faster than realtime. The small model can do real-time generation even without batching, so that's your best bet for making a low-latency stream.
+Hardware: 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can generate three interleaved streams faster than real-time. The small model can do real-time generation even without batching, so that's your best bet for making a low-latency stream.
 
 At real-time speed, it'll take batch size * 3 minutes to buffer the stream, so keep that in mind (or change play_stream_time to a smaller value in musicgen-client.py)
 
