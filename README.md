@@ -2,7 +2,7 @@
 
 ## Usage
 
-Requirements: Docker and  `ffplay` (from `ffmpeg`). 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can generate three interleaved streams faster than realtime.
+Requirements: Docker, `curl` and  `ffplay` (from `ffmpeg`). 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can generate three interleaved streams faster than realtime.
 
 ```
 bash start.sh
