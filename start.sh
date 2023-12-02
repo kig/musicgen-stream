@@ -12,6 +12,7 @@ fi
 docker run -it --rm \
     --gpus=all \
     --name "$APP_NAME" \
+    -p 8765:8765 \
     -v "$APP_DIR":/app \
     -v "$CACHE_DIR":/root/.cache \
     -v "$CACHE_DIR"/huggingface/:/root/.cache/huggingface \
