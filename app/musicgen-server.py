@@ -14,8 +14,9 @@ import torch
 device = 'cpu'
 if torch.cuda.is_available():
     device = 'cuda'
-elif torch.backends.mps.is_available():
-    device = 'mps'
+# MPS runs out of memory and produces garbled output
+#elif torch.backends.mps.is_available():
+#    device = 'mps'
 
 model_name = "facebook/musicgen-small"
 processor = AutoProcessor.from_pretrained(model_name)
