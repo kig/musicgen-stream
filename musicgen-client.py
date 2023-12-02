@@ -18,8 +18,6 @@ def main():
 
     curl = subprocess.Popen(["curl", "-s", "-k", "-N", "-q", "-d", f"@{music_json}", url], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        play_stream_time = 1
-
         # Play each stream for 3 minutes.
         play_stream_time = 180
 
