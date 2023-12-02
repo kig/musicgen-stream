@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker buildx build https://github.com/kig/musicgen-stream -t musicgen-stream:latest
+docker buildx build github.com/kig/musicgen-stream#main -t musicgen-stream:latest
