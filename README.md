@@ -4,7 +4,7 @@ Turning Meta's MusicGen AI model into a live music stream.
 
 ## Usage
 
-Requirements: Docker, `curl` and  `ffplay` (from `ffmpeg`).
+Requirements: `curl` and  `ffplay` (from `ffmpeg`).
 
 Docker
 
