@@ -44,7 +44,7 @@ def main():
 
             elapsed = time.time() - t0
             play_time = len(bufs[0][0]) / 4 / 32000
-            print(f"Buffering {idx} / {math.ceil(play_stream_time/play_time)}: {elapsed:.2f} s to generate, play time {len(bufs)} * {play_time:.2f} s, {(len(bufs)*play_time) / elapsed:.2f}x real-time")
+            print(f"Buffering {idx+1} / {math.ceil(play_stream_time/play_time)}: {elapsed:.2f} s to generate, play time {len(bufs)} * {play_time:.2f} s, {(len(bufs)*play_time) / elapsed:.2f}x real-time")
 
             idx += 1
             if idx >= math.ceil(play_stream_time/play_time):
