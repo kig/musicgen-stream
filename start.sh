@@ -16,4 +16,5 @@ docker run -it --rm \
     -v "$APP_DIR":/app \
     -v "$CACHE_DIR":/root/.cache \
     -v "$CACHE_DIR"/huggingface/:/root/.cache/huggingface \
+    -e MODEL_NAME="$1"
     musicgen-stream

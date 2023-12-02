@@ -18,9 +18,9 @@ if torch.cuda.is_available():
 #elif torch.backends.mps.is_available():
 #    device = 'mps'
 
-model_name = "facebook/musicgen-small"
-processor = AutoProcessor.from_pretrained(model_name)
-model = torch.compile(MusicgenForConditionalGeneration.from_pretrained(model_name)).to(device)
+model_name = None
+model = None
+processor = None
 
 prompts = []
 
@@ -137,7 +137,13 @@ def start_server(host="0.0.0.0", port=8765):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(prog="MusicGen Server", description="Runs a HTTP POST server that generates music using MusicGen")
+    parser.add_argument("--model", type=str, default="facebook/musicgen-small")
     parser.add_argument("--host", type=str, default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8765)
     args = parser.parse_args()
+
+    model_name = args.model
+    processor = AutoProcessor.from_pretrained(model_name)
+    model = torch.compile(MusicgenForConditionalGeneration.from_pretrained(model_name)).to(device)
+
     start_server(args.host, args.port)

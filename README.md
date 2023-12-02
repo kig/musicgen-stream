@@ -9,7 +9,7 @@ Requirements: `curl` and  `ffplay` (from `ffmpeg`).
 Docker
 
 ```bash
-bash start.sh
+bash start.sh facebook/musicgen-small
 # Once that shows the "Listening on 8765" message, open a new terminal and run the client.
 python musicgen-client.py http://localhost:8765/generate prompts.json
 ```
@@ -20,7 +20,7 @@ Without Docker
 conda create -y --name musicgen-stream python==3.10
 conda activate musicgen-stream
 pip install torch transformers aiohttp_cors
-python app/musicgen-server.py
+python app/musicgen-server.py --model facebook/musicgen-small
 # In another terminal
 python musicgen-client.py http://localhost:8765/generate prompts.json
 ```
@@ -31,9 +31,9 @@ Hardware: 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can genera
 
 At real-time speed, it'll take batch size * 3 minutes to buffer the stream, so keep that in mind (or change play_stream_time to a smaller value in musicgen-client.py)
 
-CPU generation at real-time with the small model might be possible, especially if you tune the `1 * 63616` line smaller in [app/musicgen-server.py](https://github.com/kig/musicgen-stream/blob/f4c58e4cd89784f1e399cc89ea003079ae94ee4e/app/musicgen-server.py#L73). Mac MPS produces garbled output and tends to OOM after a few iterations.
+CPU generation at real-time with the small model might be possible, haven't succeeded though. Mac MPS produces garbled output and tends to OOM after a few iterations.
 
-Edit the `start.sh` script to set where to save the models (huggingface cache), and you can set CUDA_VISIBLE_DEVICES, Docker network to use, etc. 
+When running with Docker, edit the `start.sh` script to set which model to use, where to save the models (huggingface cache), and you can set CUDA_VISIBLE_DEVICES, Docker network to use, etc. 
 
 ## HTTPS?
 
