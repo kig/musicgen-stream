@@ -10,7 +10,7 @@ Docker
 
 ```bash
 bash start.sh
-# And once that shows the "Listening on 8765" message, open a new terminal and run the client.
+# Once that shows the "Listening on 8765" message, open a new terminal and run the client.
 python musicgen-client.py http://localhost:8765/generate prompts.json
 ```
 
