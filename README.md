@@ -19,7 +19,7 @@ Without Docker
 ```bash
 conda create -y --name musicgen-stream python==3.10
 conda activate musicgen-stream
-pip install torch transformers aiohttp_cors
+pip install torch transformers aiohttp_cors lameenc
 python app/musicgen-server.py --model facebook/musicgen-small --dtype float16
 # In another terminal
 python musicgen-client.py --server http://localhost:8765/generate --prompts prompts.json
