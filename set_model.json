@@ -1,0 +1,1 @@
+{"model": "facebook/musicgen-small", "dtype": "float16", "device": "cuda"}

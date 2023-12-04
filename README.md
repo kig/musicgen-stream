@@ -25,7 +25,7 @@ python app/musicgen-server.py --model facebook/musicgen-small --dtype float16
 python musicgen-client.py --server http://localhost:8765/generate --prompts prompts.json
 ```
 
-**New** Buffer on server, stream out MP3.
+**New** Buffer on server, stream out MP3. If you want to broadcast this, you need a separate streaming server in front, the generate server doesn't support multiple clients.
 
 ```bash
 curl -k -N -d @prompts_mp3.json https://localhost:8765/generate | ffplay -nodisp -hide_banner -autoexit -

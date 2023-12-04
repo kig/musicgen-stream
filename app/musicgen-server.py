@@ -5,6 +5,7 @@ t00 = time.time()
 print(f"{time.time():.2f}: Loading modules")
 t0 = time.time()
 
+import gc
 from aiohttp import web
 import aiohttp_cors
 import asyncio
@@ -41,6 +42,36 @@ def set_prompts(new_prompts, init=False):
     else:
         for i in range(min(len(prompts), len(new_prompts))):
             prompts[i] = new_prompts[i]
+
+def set_model(new_model, new_dtype, new_device=device):
+    global model_name, model, processor, device
+
+    dtype = new_dtype
+
+    if model_name == new_model and model.dtype == dtype and device == new_device:
+        print(f"{time.time():.2f}: Model {new_model} already loaded on {device} with dtype {dtype}")
+        return
+
+    # Unload the previous model.
+    # Both models may not fit into GPU memory at the same time.
+    model = None
+    processor = None
+    gc.collect()
+
+    if device == 'cuda':
+        torch.cuda.empty_cache()
+
+    if new_device == 'cpu' and dtype == torch.float16:
+        dtype = torch.float32
+
+    device = new_device
+
+    print(f"{time.time():.2f}: Loading model {new_model} on {new_device} with dtype {dtype}")
+    t0 = time.time()
+    model_name = new_model
+    processor = AutoProcessor.from_pretrained(model_name)
+    model = torch.compile(MusicgenForConditionalGeneration.from_pretrained(model_name).to(dtype)).to(device)
+    print(f"{time.time():.2f}: Loaded model in {time.time()-t0:.2f} s")
 
 def run_generate():
     sampling_rate = model.config.audio_encoder.sampling_rate
@@ -173,6 +204,35 @@ async def http_handler_generate(request):
 
     return resp
 
+async def http_handler_set_model(request):
+    peername = request.transport.get_extra_info('peername')
+    if peername is not None:
+        host, port = peername
+    request_addr = f"{host}:{port}"
+    if 'X-Forwarded-For' in request.headers:
+        request_addr += f" ({request.headers['X-Forwarded-For']})"
+    print(f"Change model request: {request_addr}")
+    cmd = await request.json()
+    resp = web.StreamResponse()
+    resp.content_type = 'text/plain'
+    await resp.prepare(request)
+
+    dtype = model.dtype
+    if 'dtype' in cmd:
+        if cmd['dtype'] == "float16":
+            dtype = torch.float16
+        elif cmd['dtype'] == "float" or cmd['dtype'] == "float32":
+            dtype = torch.float32
+
+    new_device = device
+    if 'device' in cmd:
+        new_device = cmd['device']
+
+    set_model(cmd['model'], dtype, new_device)
+    await resp.write_eof()
+
+    return resp
+
 async def http_handler_set_prompts(request):
     peername = request.transport.get_extra_info('peername')
     if peername is not None:
@@ -197,6 +257,7 @@ def start_server(host="0.0.0.0", port=8765):
     app.add_routes([
         web.post('/generate', http_handler_generate),
         web.post('/set_prompts', http_handler_set_prompts),
+        web.post('/set_model', http_handler_set_model),
     ])
     cors = aiohttp_cors.setup(app, defaults={
         "*": aiohttp_cors.ResourceOptions(
@@ -220,17 +281,10 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=int, default=8765)
     args = parser.parse_args()
 
-    dtype = torch.float16
-    if args.dtype == "float":
-        dtype = torch.float
+    dtype = torch.float
+    if args.dtype == "float16":
+        dtype = torch.float16
 
-    print(f"{time.time():.2f}: Loading model {args.model} on {device} with dtype {dtype}")
-    t0 = time.time()
-
-    model_name = args.model
-    processor = AutoProcessor.from_pretrained(model_name)
-    model = torch.compile(MusicgenForConditionalGeneration.from_pretrained(model_name).to(dtype)).to(device)
-
-    print(f"{time.time():.2f}: Loaded model in {time.time()-t0:.2f} s")
+    set_model(args.model, dtype)
 
     start_server(args.host, args.port)
