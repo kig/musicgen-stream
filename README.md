@@ -39,6 +39,12 @@ Change prompts of the running stream. Note that the number of prompts is capped 
 curl -k -d @new_prompts.json http://localhost:8765/set_prompts
 ```
 
+**New** Swap models without restarting the container.
+
+```bash
+curl -k -N -d @set_model.json https://localhost:8765/set_model
+```
+
 Hardware: 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can generate three interleaved streams faster than real-time. The small model can do real-time generation even without batching, so that's your best bet for making a low-latency stream.
 
 At real-time speed, it'll take batch size * 3 minutes to buffer the stream, so keep that in mind (or change play_stream_time to a smaller value in musicgen-client.py)
