@@ -1,0 +1,9 @@
+{
+    "prompts": [
+        "A song about the hard times.",
+        "A song about the good times.",
+        "A song to sing in the shower."
+    ],
+    "mp3": true,
+    "buffer_seconds": 120
+}

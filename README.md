@@ -25,6 +25,12 @@ python app/musicgen-server.py --model facebook/musicgen-small --dtype float16
 python musicgen-client.py --server http://localhost:8765/generate --prompts prompts.json
 ```
 
+**New** Buffer on server, stream out MP3.
+
+```bash
+curl -k -N -d @prompts_mp3.json https://localhost:8765/generate | ffplay -nodisp -hide_banner -autoexit -
+```
+
 Music should start playing after around 10 minutes of buffering.
 
 Change prompts of the running stream. Note that the number of prompts is capped to the number of prompts running on the server. This takes quite long to register on the server side.

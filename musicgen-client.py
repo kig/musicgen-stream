@@ -12,6 +12,7 @@ def main():
     parser = argparse.ArgumentParser(prog="MusicGen Client", description="Plays back music from MusicGen Server")
     parser.add_argument("--prompts", type=str, default="prompts.json")
     parser.add_argument("--set-prompts", action="store_true")
+    parser.add_argument("--buffer", type=int, default=180, help="How many seconds to buffer before playing. Plays each prompt this long until switching to the next one.")
     parser.add_argument("--server", type=str, default="http://localhost:8765")
     args = parser.parse_args()
 
@@ -31,8 +32,7 @@ def main():
 
     curl = subprocess.Popen(["curl", "-s", "-k", "-N", "-q", "-d", f"@{music_json}", f"{server}/generate"], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        # Play each stream for 3 minutes.
-        play_stream_time = 180
+        play_stream_time = args.buffer
 
         idx = 0
 
