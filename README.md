@@ -11,7 +11,7 @@ Docker
 ```bash
 bash start.sh facebook/musicgen-small
 # Once that shows the "Listening on 8765" message, open a new terminal and run the client.
-python musicgen-client.py http://localhost:8765/generate prompts.json
+python musicgen-client.py
 ```
 
 Without Docker
@@ -20,12 +20,18 @@ Without Docker
 conda create -y --name musicgen-stream python==3.10
 conda activate musicgen-stream
 pip install torch transformers aiohttp_cors
-python app/musicgen-server.py --model facebook/musicgen-small
+python app/musicgen-server.py --model facebook/musicgen-small --dtype float16
 # In another terminal
-python musicgen-client.py http://localhost:8765/generate prompts.json
+python musicgen-client.py --server http://localhost:8765/generate --prompts prompts.json
 ```
 
 Music should start playing after around 10 minutes of buffering.
+
+Change prompts of the running stream. Note that the number of prompts is capped to the number of prompts running on the server. This takes quite long to register on the server side.
+
+```bash
+curl -k -d @new_prompts.json http://localhost:8765/set_prompts
+```
 
 Hardware: 24GB VRAM for musicgen-large, 8GB is ok for small. RTX 3090 can generate three interleaved streams faster than real-time. The small model can do real-time generation even without batching, so that's your best bet for making a low-latency stream.
 

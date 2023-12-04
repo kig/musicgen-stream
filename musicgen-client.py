@@ -8,15 +8,28 @@ import json
 import math
 
 def main():
-    url = sys.argv[1]
-    music_json = sys.argv[2]
+    import argparse
+    parser = argparse.ArgumentParser(prog="MusicGen Client", description="Plays back music from MusicGen Server")
+    parser.add_argument("--prompts", type=str, default="prompts.json")
+    parser.add_argument("--set-prompts", action="store_true")
+    parser.add_argument("--server", type=str, default="http://localhost:8765")
+    args = parser.parse_args()
+
+    server = args.server
+    music_json = args.prompts
     with open(music_json, "rb") as f:
         music_config = json.loads(f.read())
 
     stream_count = len(music_config["prompts"])
     print(music_config)
 
-    curl = subprocess.Popen(["curl", "-s", "-k", "-N", "-q", "-d", f"@{music_json}", url], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if args.set_prompts:
+        print("Setting prompts")
+        # curl -k -d @prompts.json http://localhost:8765/set_prompts
+        subprocess.run(["curl", "-s", "-k", "-N", "-q", "-d", f"@{music_json}", f"{server}/set_prompts"])
+        return
+
+    curl = subprocess.Popen(["curl", "-s", "-k", "-N", "-q", "-d", f"@{music_json}", f"{server}/generate"], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
         # Play each stream for 3 minutes.
         play_stream_time = 180
